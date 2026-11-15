@@ -1,0 +1,17 @@
+REMOVED Page: removed attribute comments, not supported in PAGE 2018-07-15
+REMOVED Page: removed attribute customLanguages, not supported in PAGE 2018-07-15
+REMOVED Page: removed element TextStyle, not supported in PAGE 2018-07-15
+REMOVED TextRegion 'r1': removed attribute customScripts, not supported in PAGE 2018-07-15
+REMOVED TextRegion 'r1': removed attribute mirrored, not supported in PAGE 2018-07-15
+REMOVED TextLine 'l1': removed attribute orientation, not supported in PAGE 2018-07-15
+REMOVED TextLine 'l1': removed attribute mirrored, not supported in PAGE 2018-07-15
+REMOVED TextLine 'l1': removed attribute secondaryLanguage, not supported in PAGE 2018-07-15
+REMOVED TextLine 'l1': removed element AscentLine, not supported in PAGE 2018-07-15
+REMOVED TextLine 'l1': removed element MeanLine, not supported in PAGE 2018-07-15
+REMOVED TextLine 'l1': removed element DescentLine, not supported in PAGE 2018-07-15
+REMOVED Word 'w1': removed attribute orientation, not supported in PAGE 2018-07-15
+REMOVED Word 'w1', TextStyle: removed attribute underlineStyle, not supported in PAGE 2018-07-15
+REMOVED TableRegion 'r4', Grid: removed 2 AddPoints elements, not supported in PAGE 2018-07-15
+CHANGED FormRegion 'r19': changed to CustomRegion of type 'form', FormRegion is not supported in PAGE 2018-07-15
+REMOVED FormRegion 'r19': removed attribute mirrored, which CustomRegion does not have
+REMOVED FormRegion 'r19': removed attribute bgColour, which CustomRegion does not have

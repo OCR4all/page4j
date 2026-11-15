@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<PcGts xmlns="http://schema.primaresearch.org/PAGE/gts/pagecontent/2013-07-15" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://schema.primaresearch.org/PAGE/gts/pagecontent/2013-07-15 http://schema.primaresearch.org/PAGE/gts/pagecontent/2013-07-15/pagecontent.xsd" pcGtsId="gts1">
+  <Metadata>
+    <Creator>page4j</Creator>
+    <Created>2020-01-02T03:04:05</Created>
+    <LastChange>2021-06-07T08:09:10</LastChange>
+    <Comments>Golden fixture</Comments>
+  </Metadata>
+  <Page imageFilename="page.png" imageWidth="1000" imageHeight="2000" type="content">
+    <AlternativeImage filename="page.bin.png" comments="binarized"/>
+    <Border>
+      <Coords points="10,10 990,10 990,1990 10,1990"/>
+    </Border>
+    <PrintSpace>
+      <Coords points="50,50 950,50 950,1950 50,1950"/>
+    </PrintSpace>
+    <ReadingOrder>
+      <OrderedGroup id="ro1" caption="Main order">
+        <RegionRefIndexed index="0" regionRef="r1"/>
+        <UnorderedGroupIndexed id="ro2" index="1" caption="Figures">
+          <RegionRef regionRef="r3"/>
+          <OrderedGroup id="ro3">
+            <RegionRefIndexed index="0" regionRef="r4"/>
+            <RegionRefIndexed index="1" regionRef="r5"/>
+          </OrderedGroup>
+        </UnorderedGroupIndexed>
+        <RegionRefIndexed index="2" regionRef="r6"/>
+      </OrderedGroup>
+    </ReadingOrder>
+    <Layers>
+      <Layer id="layer1" zIndex="1" caption="Top">
+        <RegionRef regionRef="r1"/>
+        <RegionRef regionRef="r2"/>
+      </Layer>
+    </Layers>
+    <Relations>
+      <Relation type="link" custom="rel-custom" comments="rel comment">
+        <RegionRef regionRef="r1"/>
+        <RegionRef regionRef="r2"/>
+      </Relation>
+    </Relations>
+    <TextRegion id="r1" custom="region-custom" comments="region comment" orientation="1.5" type="heading" leading="3" readingDirection="left-to-right" indented="true" align="left" primaryLanguage="German" primaryScript="Latin" secondaryScript="Greek" production="printed">
+      <Coords points="100,100 900,100 900,300 100,300"/>
+      <TextLine id="l1" primaryLanguage="German" production="printed" custom="line-custom" comments="line comment">
+        <Coords points="100,100 900,100 900,200 100,200"/>
+        <Baseline points="100,190 900,190"/>
+        <Word id="w1" language="German" custom="word-custom">
+          <Coords points="100,100 300,100 300,200 100,200"/>
+          <Glyph id="g1" ligature="false" symbol="false">
+            <Coords points="100,100 150,100 150,200 100,200"/>
+            <TextEquiv conf="0.95">
+              <Unicode>G</Unicode>
+            </TextEquiv>
+            <TextStyle italic="true"/>
+          </Glyph>
+          <TextEquiv conf="0.9">
+            <PlainText>Gruesse</PlainText>
+            <Unicode>Grüße</Unicode>
+          </TextEquiv>
+          <TextStyle underlined="true"/>
+        </Word>
+        <TextEquiv conf="0.85">
+          <Unicode>Grüße &amp; &lt;text&gt;</Unicode>
+        </TextEquiv>
+        <TextStyle fontFamily="Arial" textColour="black"/>
+      </TextLine>
+      <TextLine id="l2">
+        <Coords points="100,200 900,200 900,300 100,300"/>
+        <TextEquiv>
+          <Unicode></Unicode>
+        </TextEquiv>
+      </TextLine>
+      <TextEquiv conf="0.7">
+        <Unicode>Grüße &amp; &lt;text&gt;</Unicode>
+      </TextEquiv>
+      <TextStyle serif="true" fontSize="14.5" bgColour="white"/>
+    </TextRegion>
+    <ImageRegion id="r2" orientation="0.0" colourDepth="colour" bgColour="white" embText="true">
+      <Coords points="100,400 500,400 500,800 100,800"/>
+      <TextRegion id="r3" type="caption">
+        <Coords points="120,700 480,700 480,780 120,780"/>
+        <TextEquiv>
+          <Unicode>Nested caption</Unicode>
+        </TextEquiv>
+      </TextRegion>
+    </ImageRegion>
+    <TableRegion id="r4" rows="1" columns="2" lineSeparators="true">
+      <Coords points="100,900 900,900 900,1100 100,1100"/>
+      <TextRegion id="r5" type="paragraph">
+        <Coords points="100,900 500,900 500,1100 100,1100"/>
+        <TextEquiv>
+          <Unicode>Cell</Unicode>
+        </TextEquiv>
+      </TextRegion>
+      <TextRegion id="r6" type="paragraph">
+        <Coords points="500,900 900,900 900,1100 500,1100"/>
+      </TextRegion>
+    </TableRegion>
+    <GraphicRegion id="r7" type="logo" numColours="3" embText="false">
+      <Coords points="600,400 900,400 900,500 600,500"/>
+    </GraphicRegion>
+    <LineDrawingRegion id="r8" penColour="black" bgColour="white">
+      <Coords points="600,520 900,520 900,600 600,600"/>
+    </LineDrawingRegion>
+    <ChartRegion id="r9" type="bar" numColours="2">
+      <Coords points="600,620 900,620 900,700 600,700"/>
+    </ChartRegion>
+    <SeparatorRegion id="r10" orientation="90.0" colour="black">
+      <Coords points="550,400 560,400 560,800 550,800"/>
+    </SeparatorRegion>
+    <MathsRegion id="r11" bgColour="white">
+      <Coords points="100,1200 400,1200 400,1300 100,1300"/>
+    </MathsRegion>
+    <ChemRegion id="r12">
+      <Coords points="420,1200 700,1200 700,1300 420,1300"/>
+    </ChemRegion>
+    <MusicRegion id="r13">
+      <Coords points="720,1200 900,1200 900,1300 720,1300"/>
+    </MusicRegion>
+    <AdvertRegion id="r14">
+      <Coords points="100,1400 400,1400 400,1500 100,1500"/>
+    </AdvertRegion>
+    <NoiseRegion id="r15">
+      <Coords points="420,1400 500,1400 500,1500 420,1500"/>
+    </NoiseRegion>
+    <UnknownRegion id="r16">
+      <Coords points="520,1400 600,1400 600,1500 520,1500"/>
+    </UnknownRegion>
+    <UnknownRegion id="r17">
+      <Coords points="620,1400 900,1400 900,1500 620,1500"/>
+    </UnknownRegion>
+    <UnknownRegion id="r18">
+      <Coords points="100,1600 400,1600 400,1700 100,1700"/>
+    </UnknownRegion>
+    <UnknownRegion id="r19" comments="a form">
+      <Coords points="420,1600 900,1600 900,1700 420,1700"/>
+    </UnknownRegion>
+  </Page>
+</PcGts>

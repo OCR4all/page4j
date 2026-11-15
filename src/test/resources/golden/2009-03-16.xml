@@ -1,0 +1,258 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<PcGts xmlns="http://schema.primaresearch.org/PAGE/gts/pagecontent/2009-03-16" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://schema.primaresearch.org/PAGE/gts/pagecontent/2009-03-16 http://schema.primaresearch.org/PAGE/gts/pagecontent/2009-03-16/pagecontent.xsd" pcGtsId="gts1">
+  <Metadata>
+    <Creator>page4j</Creator>
+    <Created>2020-01-02T03:04:05</Created>
+    <LastChange>2021-06-07T08:09:10</LastChange>
+    <Comments>Golden fixture</Comments>
+  </Metadata>
+  <Page imageFilename="page.png" imageWidth="1000" imageHeight="2000">
+    <Border>
+      <Coords>
+        <Point x="10" y="10"/>
+        <Point x="990" y="10"/>
+        <Point x="990" y="1990"/>
+        <Point x="10" y="1990"/>
+      </Coords>
+    </Border>
+    <PrintSpace>
+      <Coords>
+        <Point x="50" y="50"/>
+        <Point x="950" y="50"/>
+        <Point x="950" y="1950"/>
+        <Point x="50" y="1950"/>
+      </Coords>
+    </PrintSpace>
+    <ReadingOrder>
+      <OrderedGroup id="ro1">
+        <RegionRefIndexed index="0" regionRef="r1"/>
+        <UnorderedGroupIndexed id="ro2" index="1">
+          <RegionRef regionRef="r3"/>
+          <OrderedGroup id="ro3">
+            <RegionRefIndexed index="0" regionRef="r4"/>
+            <RegionRefIndexed index="1" regionRef="r5"/>
+          </OrderedGroup>
+        </UnorderedGroupIndexed>
+        <RegionRefIndexed index="2" regionRef="r6"/>
+      </OrderedGroup>
+    </ReadingOrder>
+    <Layers>
+      <Layer id="layer1" zIndex="1">
+        <RegionRef regionRef="r1"/>
+        <RegionRef regionRef="r2"/>
+      </Layer>
+    </Layers>
+    <TextRegion id="r1" orientation="1.5" type="heading" bgColour="white" fontSize="14.5" leading="3" readingDirection="left-to-right" indented="true" primaryLanguage="German" primaryScript="Latin" secondaryScript="Greek">
+      <Coords>
+        <Point x="100" y="100"/>
+        <Point x="900" y="100"/>
+        <Point x="900" y="300"/>
+        <Point x="100" y="300"/>
+      </Coords>
+      <TextLine id="l1">
+        <Coords>
+          <Point x="100" y="100"/>
+          <Point x="900" y="100"/>
+          <Point x="900" y="200"/>
+          <Point x="100" y="200"/>
+        </Coords>
+        <Word id="w1">
+          <Coords>
+            <Point x="100" y="100"/>
+            <Point x="300" y="100"/>
+            <Point x="300" y="200"/>
+            <Point x="100" y="200"/>
+          </Coords>
+          <Glyph id="g1" ligature="false" symbol="false">
+            <Coords>
+              <Point x="100" y="100"/>
+              <Point x="150" y="100"/>
+              <Point x="150" y="200"/>
+              <Point x="100" y="200"/>
+            </Coords>
+            <TextEquiv>
+              <PlainText>G</PlainText>
+              <Unicode>G</Unicode>
+            </TextEquiv>
+          </Glyph>
+          <TextEquiv>
+            <PlainText>Gruesse</PlainText>
+            <Unicode>Grüße</Unicode>
+          </TextEquiv>
+        </Word>
+        <TextEquiv>
+          <PlainText>Grüße &amp; &lt;text&gt;</PlainText>
+          <Unicode>Grüße &amp; &lt;text&gt;</Unicode>
+        </TextEquiv>
+      </TextLine>
+      <TextLine id="l2">
+        <Coords>
+          <Point x="100" y="200"/>
+          <Point x="900" y="200"/>
+          <Point x="900" y="300"/>
+          <Point x="100" y="300"/>
+        </Coords>
+        <TextEquiv>
+          <PlainText></PlainText>
+          <Unicode></Unicode>
+        </TextEquiv>
+      </TextLine>
+      <TextEquiv>
+        <PlainText>Grüße &amp; &lt;text&gt;</PlainText>
+        <Unicode>Grüße &amp; &lt;text&gt;</Unicode>
+      </TextEquiv>
+    </TextRegion>
+    <ImageRegion id="r2" orientation="0.0" colourDepth="colour" bgColour="white" embText="true">
+      <Coords>
+        <Point x="100" y="400"/>
+        <Point x="500" y="400"/>
+        <Point x="500" y="800"/>
+        <Point x="100" y="800"/>
+      </Coords>
+    </ImageRegion>
+    <TextRegion id="r3" type="caption">
+      <Coords>
+        <Point x="120" y="700"/>
+        <Point x="480" y="700"/>
+        <Point x="480" y="780"/>
+        <Point x="120" y="780"/>
+      </Coords>
+      <TextEquiv>
+        <PlainText>Nested caption</PlainText>
+        <Unicode>Nested caption</Unicode>
+      </TextEquiv>
+    </TextRegion>
+    <TableRegion id="r4" rows="1" columns="2" lineSeparators="true">
+      <Coords>
+        <Point x="100" y="900"/>
+        <Point x="900" y="900"/>
+        <Point x="900" y="1100"/>
+        <Point x="100" y="1100"/>
+      </Coords>
+    </TableRegion>
+    <TextRegion id="r5" type="paragraph">
+      <Coords>
+        <Point x="100" y="900"/>
+        <Point x="500" y="900"/>
+        <Point x="500" y="1100"/>
+        <Point x="100" y="1100"/>
+      </Coords>
+      <TextEquiv>
+        <PlainText>Cell</PlainText>
+        <Unicode>Cell</Unicode>
+      </TextEquiv>
+    </TextRegion>
+    <TextRegion id="r6" type="paragraph">
+      <Coords>
+        <Point x="500" y="900"/>
+        <Point x="900" y="900"/>
+        <Point x="900" y="1100"/>
+        <Point x="500" y="1100"/>
+      </Coords>
+    </TextRegion>
+    <GraphicRegion id="r7" type="logo" numColours="3" embText="false">
+      <Coords>
+        <Point x="600" y="400"/>
+        <Point x="900" y="400"/>
+        <Point x="900" y="500"/>
+        <Point x="600" y="500"/>
+      </Coords>
+    </GraphicRegion>
+    <LineDrawingRegion id="r8" penColour="black" bgColour="white">
+      <Coords>
+        <Point x="600" y="520"/>
+        <Point x="900" y="520"/>
+        <Point x="900" y="600"/>
+        <Point x="600" y="600"/>
+      </Coords>
+    </LineDrawingRegion>
+    <ChartRegion id="r9" type="bar" numColours="2">
+      <Coords>
+        <Point x="600" y="620"/>
+        <Point x="900" y="620"/>
+        <Point x="900" y="700"/>
+        <Point x="600" y="700"/>
+      </Coords>
+    </ChartRegion>
+    <SeparatorRegion id="r10" orientation="90.0" colour="black">
+      <Coords>
+        <Point x="550" y="400"/>
+        <Point x="560" y="400"/>
+        <Point x="560" y="800"/>
+        <Point x="550" y="800"/>
+      </Coords>
+    </SeparatorRegion>
+    <MathsRegion id="r11" bgColour="white">
+      <Coords>
+        <Point x="100" y="1200"/>
+        <Point x="400" y="1200"/>
+        <Point x="400" y="1300"/>
+        <Point x="100" y="1300"/>
+      </Coords>
+    </MathsRegion>
+    <UnknownRegion id="r12">
+      <Coords>
+        <Point x="420" y="1200"/>
+        <Point x="700" y="1200"/>
+        <Point x="700" y="1300"/>
+        <Point x="420" y="1300"/>
+      </Coords>
+    </UnknownRegion>
+    <UnknownRegion id="r13">
+      <Coords>
+        <Point x="720" y="1200"/>
+        <Point x="900" y="1200"/>
+        <Point x="900" y="1300"/>
+        <Point x="720" y="1300"/>
+      </Coords>
+    </UnknownRegion>
+    <UnknownRegion id="r14">
+      <Coords>
+        <Point x="100" y="1400"/>
+        <Point x="400" y="1400"/>
+        <Point x="400" y="1500"/>
+        <Point x="100" y="1500"/>
+      </Coords>
+    </UnknownRegion>
+    <NoiseRegion id="r15">
+      <Coords>
+        <Point x="420" y="1400"/>
+        <Point x="500" y="1400"/>
+        <Point x="500" y="1500"/>
+        <Point x="420" y="1500"/>
+      </Coords>
+    </NoiseRegion>
+    <UnknownRegion id="r16">
+      <Coords>
+        <Point x="520" y="1400"/>
+        <Point x="600" y="1400"/>
+        <Point x="600" y="1500"/>
+        <Point x="520" y="1500"/>
+      </Coords>
+    </UnknownRegion>
+    <UnknownRegion id="r17">
+      <Coords>
+        <Point x="620" y="1400"/>
+        <Point x="900" y="1400"/>
+        <Point x="900" y="1500"/>
+        <Point x="620" y="1500"/>
+      </Coords>
+    </UnknownRegion>
+    <UnknownRegion id="r18">
+      <Coords>
+        <Point x="100" y="1600"/>
+        <Point x="400" y="1600"/>
+        <Point x="400" y="1700"/>
+        <Point x="100" y="1700"/>
+      </Coords>
+    </UnknownRegion>
+    <UnknownRegion id="r19">
+      <Coords>
+        <Point x="420" y="1600"/>
+        <Point x="900" y="1600"/>
+        <Point x="900" y="1700"/>
+        <Point x="420" y="1700"/>
+      </Coords>
+    </UnknownRegion>
+  </Page>
+</PcGts>

@@ -1,0 +1,23 @@
+# Differences that a same-version round trip still produces (see RoundTrip and
+# RoundTripFidelityTest). Format: <document> | <difference>
+#
+# This is a ratchet: a difference that is not listed fails the test as a regression, and a listed
+# difference that no longer occurs fails it too, so a fix must delete its lines here. Never add
+# lines to make a test pass unless the difference is intended.
+
+# Intended: xsd:float values are written in Java's form (0 -> 0.0, 300 -> 300.0).
+fidelity/number-formatting.xml | CHANGED_ATTRIBUTE /PcGts[1]/Page[1]/@imageXResolution "300" -> "300.0"
+fidelity/number-formatting.xml | CHANGED_ATTRIBUTE /PcGts[1]/Page[1]/@imageYResolution "300" -> "300.0"
+fidelity/number-formatting.xml | CHANGED_ATTRIBUTE /PcGts[1]/Page[1]/@orientation "0" -> "0.0"
+fidelity/number-formatting.xml | CHANGED_ATTRIBUTE /PcGts[1]/Page[1]/TextRegion[@id='r1']/@orientation "0" -> "0.0"
+
+# Intended: up to 2010-01-12 the reading order can hold several groups and region references; the
+# model has one root group, so the reader wraps them in an UnorderedGroup (see PageXmlReader).
+coverage/2009-03-16.xml | EXTRA_ELEMENT /PcGts[1]/Page[1]/ReadingOrder[1]/UnorderedGroup[@id='readingOrder']
+coverage/2009-03-16.xml | MISSING_ELEMENT /PcGts[1]/Page[1]/ReadingOrder[1]/OrderedGroup[@id='ord2']
+coverage/2009-03-16.xml | MISSING_ELEMENT /PcGts[1]/Page[1]/ReadingOrder[1]/RegionRef[1]
+coverage/2009-03-16.xml | MISSING_ELEMENT /PcGts[1]/Page[1]/ReadingOrder[1]/UnorderedGroup[@id='uno11']
+coverage/2010-01-12.xml | EXTRA_ELEMENT /PcGts[1]/Page[1]/ReadingOrder[1]/UnorderedGroup[@id='readingOrder']
+coverage/2010-01-12.xml | MISSING_ELEMENT /PcGts[1]/Page[1]/ReadingOrder[1]/OrderedGroup[@id='ord2']
+coverage/2010-01-12.xml | MISSING_ELEMENT /PcGts[1]/Page[1]/ReadingOrder[1]/RegionRef[1]
+coverage/2010-01-12.xml | MISSING_ELEMENT /PcGts[1]/Page[1]/ReadingOrder[1]/UnorderedGroup[@id='uno11']

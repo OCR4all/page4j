@@ -1,0 +1,93 @@
+REMOVED Glyph 'g1': removed element Graphemes, not supported in PAGE 2010-03-19
+REMOVED Page: removed attribute comments, not supported in PAGE 2010-03-19
+REMOVED Page: removed attribute type, not supported in PAGE 2010-03-19
+REMOVED Page: removed attribute primaryLanguage, not supported in PAGE 2010-03-19
+REMOVED Page: removed attribute customLanguages, not supported in PAGE 2010-03-19
+REMOVED Page: removed attribute readingDirection, not supported in PAGE 2010-03-19
+REMOVED Page: removed attribute conf, not supported in PAGE 2010-03-19
+REMOVED Metadata: removed attribute externalRef, not supported in PAGE 2010-03-19
+REMOVED Metadata: removed element UserDefined, not supported in PAGE 2010-03-19
+REMOVED Metadata: removed 1 MetadataItem element, not supported in PAGE 2010-03-19
+REMOVED Page: removed 1 AlternativeImage element, not supported in PAGE 2010-03-19
+REMOVED ReadingOrder: removed attribute conf, not supported in PAGE 2010-03-19
+REMOVED OrderedGroup 'ro1': removed attribute caption, not supported in PAGE 2010-03-19
+REMOVED OrderedGroup 'ro1': removed element UserDefined, not supported in PAGE 2010-03-19
+REMOVED OrderedGroup 'ro1': removed 1 Labels element, not supported in PAGE 2010-03-19
+REMOVED UnorderedGroup 'ro2': removed attribute regionRef, not supported in PAGE 2010-03-19
+REMOVED UnorderedGroup 'ro2': removed attribute caption, not supported in PAGE 2010-03-19
+REMOVED Layer 'layer1': removed attribute caption, not supported in PAGE 2010-03-19
+REMOVED Page: removed 1 Relation element, not supported in PAGE 2010-03-19
+REMOVED Page: removed element TextStyle, not supported in PAGE 2010-03-19
+REMOVED Page: removed element UserDefined, not supported in PAGE 2010-03-19
+REMOVED Page: removed 1 Labels element, not supported in PAGE 2010-03-19
+REMOVED TextRegion 'r1': removed attribute textLineOrder, not supported in PAGE 2010-03-19
+REMOVED TextRegion 'r1': removed attribute align, not supported in PAGE 2010-03-19
+CHANGED TextRegion 'r1': changed primaryScript 'Latn - Latin' to 'Latin', 'Latn - Latin' is not supported in PAGE 2010-03-19
+CHANGED TextRegion 'r1': changed secondaryScript 'Grek - Greek' to 'Greek', 'Grek - Greek' is not supported in PAGE 2010-03-19
+REMOVED TextRegion 'r1': removed attribute customScripts, not supported in PAGE 2010-03-19
+REMOVED TextRegion 'r1': removed attribute production, not supported in PAGE 2010-03-19
+REMOVED TextRegion 'r1': removed attribute custom, not supported in PAGE 2010-03-19
+REMOVED TextRegion 'r1': removed attribute comments, not supported in PAGE 2010-03-19
+REMOVED TextRegion 'r1': removed attribute mirrored, not supported in PAGE 2010-03-19
+REMOVED TextRegion 'r1': removed 1 AlternativeImage element, not supported in PAGE 2010-03-19
+REMOVED TextRegion 'r1', Coords: removed attribute conf, not supported in PAGE 2010-03-19
+REMOVED TextRegion 'r1': removed element UserDefined, not supported in PAGE 2010-03-19
+REMOVED TextRegion 'r1': removed 1 Labels element, not supported in PAGE 2010-03-19
+REMOVED TextLine 'l1': removed attribute orientation, not supported in PAGE 2010-03-19
+REMOVED TextLine 'l1': removed attribute mirrored, not supported in PAGE 2010-03-19
+REMOVED TextLine 'l1': removed attribute secondaryLanguage, not supported in PAGE 2010-03-19
+REMOVED TextLine 'l1': removed attribute primaryLanguage, not supported in PAGE 2010-03-19
+REMOVED TextLine 'l1': removed attribute production, not supported in PAGE 2010-03-19
+REMOVED TextLine 'l1': removed attribute custom, not supported in PAGE 2010-03-19
+REMOVED TextLine 'l1': removed attribute comments, not supported in PAGE 2010-03-19
+REMOVED TextLine 'l1': removed 1 AlternativeImage element, not supported in PAGE 2010-03-19
+REMOVED TextLine 'l1': removed element AscentLine, not supported in PAGE 2010-03-19
+REMOVED TextLine 'l1': removed element MeanLine, not supported in PAGE 2010-03-19
+REMOVED TextLine 'l1': removed element Baseline, not supported in PAGE 2010-03-19
+REMOVED TextLine 'l1': removed element DescentLine, not supported in PAGE 2010-03-19
+REMOVED Word 'w1': removed attribute orientation, not supported in PAGE 2010-03-19
+REMOVED Word 'w1': removed attribute language, not supported in PAGE 2010-03-19
+REMOVED Word 'w1': removed attribute custom, not supported in PAGE 2010-03-19
+REMOVED Word 'w1': removed 1 AlternativeImage element, not supported in PAGE 2010-03-19
+REMOVED Glyph 'g1': removed attribute script, not supported in PAGE 2010-03-19
+REMOVED Glyph 'g1': removed 1 AlternativeImage element, not supported in PAGE 2010-03-19
+REMOVED Glyph 'g1', TextEquiv: removed attribute conf, not supported in PAGE 2010-03-19
+ADDED Glyph 'g1', TextEquiv: added PlainText, a copy of Unicode, required in PAGE 2010-03-19
+REMOVED Glyph 'g1': removed element TextStyle, not supported in PAGE 2010-03-19
+REMOVED Glyph 'g1': removed element UserDefined, not supported in PAGE 2010-03-19
+REMOVED Glyph 'g1': removed 1 Labels element, not supported in PAGE 2010-03-19
+REMOVED Word 'w1', TextEquiv: removed attribute conf, not supported in PAGE 2010-03-19
+REMOVED Word 'w1': removed element TextStyle, not supported in PAGE 2010-03-19
+REMOVED Word 'w1': removed element UserDefined, not supported in PAGE 2010-03-19
+REMOVED Word 'w1': removed 1 Labels element, not supported in PAGE 2010-03-19
+REMOVED TextLine 'l1': removed 1 of 2 TextEquiv elements, PAGE 2010-03-19 allows one
+REMOVED TextLine 'l1', TextEquiv: removed attribute index, not supported in PAGE 2010-03-19
+REMOVED TextLine 'l1', TextEquiv: removed attribute conf, not supported in PAGE 2010-03-19
+ADDED TextLine 'l1', TextEquiv: added PlainText, a copy of Unicode, required in PAGE 2010-03-19
+REMOVED TextLine 'l1', TextEquiv: removed attribute dataType, not supported in PAGE 2010-03-19
+REMOVED TextLine 'l1', TextEquiv: removed attribute comments, not supported in PAGE 2010-03-19
+REMOVED TextLine 'l1': removed element TextStyle, not supported in PAGE 2010-03-19
+REMOVED TextLine 'l1': removed element UserDefined, not supported in PAGE 2010-03-19
+REMOVED TextLine 'l1': removed 1 Labels element, not supported in PAGE 2010-03-19
+ADDED TextLine 'l2', TextEquiv: added PlainText, a copy of Unicode, required in PAGE 2010-03-19
+REMOVED TextRegion 'r1', TextEquiv: removed attribute conf, not supported in PAGE 2010-03-19
+ADDED TextRegion 'r1', TextEquiv: added PlainText, a copy of Unicode, required in PAGE 2010-03-19
+REMOVED TextRegion 'r1', TextStyle: removed attribute serif, not supported in PAGE 2010-03-19
+ADDED TextRegion 'r3', TextEquiv: added PlainText, a copy of Unicode, required in PAGE 2010-03-19
+CHANGED ImageRegion 'r2': moved 1 nested region next to it, PAGE 2010-03-19 nests regions only in frames
+REMOVED TextRegion 'r5': removed element Roles, not supported in PAGE 2010-03-19
+ADDED TextRegion 'r5', TextEquiv: added PlainText, a copy of Unicode, required in PAGE 2010-03-19
+REMOVED TextRegion 'r6': removed element Roles, not supported in PAGE 2010-03-19
+REMOVED TableRegion 'r4': removed element Grid, not supported in PAGE 2010-03-19
+CHANGED TableRegion 'r4': moved 2 nested regions next to it, PAGE 2010-03-19 nests regions only in frames
+CHANGED ChemRegion 'r12': changed to UnknownRegion, ChemRegion is not supported in PAGE 2010-03-19
+CHANGED MusicRegion 'r13': changed to UnknownRegion, MusicRegion is not supported in PAGE 2010-03-19
+CHANGED AdvertRegion 'r14': changed to UnknownRegion, AdvertRegion is not supported in PAGE 2010-03-19
+CHANGED CustomRegion 'r17': changed to UnknownRegion, CustomRegion is not supported in PAGE 2010-03-19
+REMOVED CustomRegion 'r17': removed attribute type, which UnknownRegion does not have
+CHANGED MapRegion 'r18': changed to UnknownRegion, MapRegion is not supported in PAGE 2010-03-19
+REMOVED MapRegion 'r18': removed attribute orientation, which UnknownRegion does not have
+CHANGED FormRegion 'r19': changed to UnknownRegion, FormRegion is not supported in PAGE 2010-03-19
+REMOVED FormRegion 'r19': removed attribute mirrored, which UnknownRegion does not have
+REMOVED FormRegion 'r19': removed attribute bgColour, which UnknownRegion does not have
+REMOVED UnknownRegion 'r19': removed attribute comments, not supported in PAGE 2010-03-19

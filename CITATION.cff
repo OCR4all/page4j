@@ -1,0 +1,16 @@
+cff-version: 1.2.0
+message: "If you use page4j in your research, please cite it as below."
+type: software
+title: page4j
+abstract: "A Java library for reading, writing and converting PAGE XML documents."
+authors:
+  - given-names: Maximilian
+    family-names: Nöth
+repository-code: "https://github.com/OCR4all/page4j"
+license: Apache-2.0
+keywords:
+  - PAGE XML
+  - OCR
+  - layout analysis
+  - ALTO
+  - digital humanities

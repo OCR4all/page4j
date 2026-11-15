@@ -1,0 +1,50 @@
+REMOVED Glyph 'g1': removed element Graphemes, not supported in PAGE 2016-07-15
+REMOVED Page: removed attribute comments, not supported in PAGE 2016-07-15
+REMOVED Page: removed attribute customLanguages, not supported in PAGE 2016-07-15
+REMOVED Page: removed attribute conf, not supported in PAGE 2016-07-15
+REMOVED Metadata: removed element UserDefined, not supported in PAGE 2016-07-15
+REMOVED Metadata: removed 1 MetadataItem element, not supported in PAGE 2016-07-15
+REMOVED Page, AlternativeImage: removed attribute conf, not supported in PAGE 2016-07-15
+REMOVED ReadingOrder: removed attribute conf, not supported in PAGE 2016-07-15
+REMOVED OrderedGroup 'ro1': removed element UserDefined, not supported in PAGE 2016-07-15
+REMOVED OrderedGroup 'ro1': removed 1 Labels element, not supported in PAGE 2016-07-15
+REMOVED UnorderedGroup 'ro2': removed attribute regionRef, not supported in PAGE 2016-07-15
+REMOVED Relation 'rel1': removed attribute id, not supported in PAGE 2016-07-15
+REMOVED Relation 'rel1': removed 1 Labels element, not supported in PAGE 2016-07-15
+REMOVED Page: removed element TextStyle, not supported in PAGE 2016-07-15
+REMOVED Page: removed element UserDefined, not supported in PAGE 2016-07-15
+REMOVED Page: removed 1 Labels element, not supported in PAGE 2016-07-15
+REMOVED TextRegion 'r1': removed attribute customScripts, not supported in PAGE 2016-07-15
+REMOVED TextRegion 'r1': removed attribute mirrored, not supported in PAGE 2016-07-15
+REMOVED TextRegion 'r1': removed 1 AlternativeImage element, not supported in PAGE 2016-07-15
+REMOVED TextRegion 'r1', Coords: removed attribute conf, not supported in PAGE 2016-07-15
+REMOVED TextRegion 'r1': removed element UserDefined, not supported in PAGE 2016-07-15
+REMOVED TextRegion 'r1': removed 1 Labels element, not supported in PAGE 2016-07-15
+REMOVED TextLine 'l1': removed attribute orientation, not supported in PAGE 2016-07-15
+REMOVED TextLine 'l1': removed attribute mirrored, not supported in PAGE 2016-07-15
+REMOVED TextLine 'l1': removed attribute secondaryLanguage, not supported in PAGE 2016-07-15
+REMOVED TextLine 'l1': removed 1 AlternativeImage element, not supported in PAGE 2016-07-15
+REMOVED TextLine 'l1': removed element AscentLine, not supported in PAGE 2016-07-15
+REMOVED TextLine 'l1': removed element MeanLine, not supported in PAGE 2016-07-15
+REMOVED TextLine 'l1', Baseline: removed attribute conf, not supported in PAGE 2016-07-15
+REMOVED TextLine 'l1': removed element DescentLine, not supported in PAGE 2016-07-15
+REMOVED Word 'w1': removed attribute orientation, not supported in PAGE 2016-07-15
+REMOVED Word 'w1': removed 1 AlternativeImage element, not supported in PAGE 2016-07-15
+REMOVED Glyph 'g1': removed 1 AlternativeImage element, not supported in PAGE 2016-07-15
+REMOVED Glyph 'g1': removed element UserDefined, not supported in PAGE 2016-07-15
+REMOVED Glyph 'g1': removed 1 Labels element, not supported in PAGE 2016-07-15
+REMOVED Word 'w1', TextStyle: removed attribute underlineStyle, not supported in PAGE 2016-07-15
+REMOVED Word 'w1': removed element UserDefined, not supported in PAGE 2016-07-15
+REMOVED Word 'w1': removed 1 Labels element, not supported in PAGE 2016-07-15
+REMOVED TextLine 'l1': removed element UserDefined, not supported in PAGE 2016-07-15
+REMOVED TextLine 'l1': removed 1 Labels element, not supported in PAGE 2016-07-15
+REMOVED TextRegion 'r5': removed element Roles, not supported in PAGE 2016-07-15
+REMOVED TextRegion 'r6': removed element Roles, not supported in PAGE 2016-07-15
+REMOVED TableRegion 'r4': removed element Grid, not supported in PAGE 2016-07-15
+CHANGED CustomRegion 'r17': changed to UnknownRegion, CustomRegion is not supported in PAGE 2016-07-15
+REMOVED CustomRegion 'r17': removed attribute type, which UnknownRegion does not have
+CHANGED MapRegion 'r18': changed to UnknownRegion, MapRegion is not supported in PAGE 2016-07-15
+REMOVED MapRegion 'r18': removed attribute orientation, which UnknownRegion does not have
+CHANGED FormRegion 'r19': changed to UnknownRegion, FormRegion is not supported in PAGE 2016-07-15
+REMOVED FormRegion 'r19': removed attribute mirrored, which UnknownRegion does not have
+REMOVED FormRegion 'r19': removed attribute bgColour, which UnknownRegion does not have
