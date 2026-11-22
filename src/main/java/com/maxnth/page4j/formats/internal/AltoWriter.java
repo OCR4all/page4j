@@ -37,14 +37,12 @@ import com.maxnth.page4j.model.value.MetadataItemType;
 import java.io.ByteArrayOutputStream;
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.StringJoiner;
-import java.util.function.Function;
 import javax.xml.XMLConstants;
 import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
@@ -106,8 +104,7 @@ public final class AltoWriter {
       @Nullable String type, String label, @Nullable String description, @Nullable String uri) {}
 
   private final Page page;
-  private final Map<String, String> propagatedWords = new HashMap<>();
-  private final Map<String, String> propagatedGlyphs = new HashMap<>();
+  private final PageText pageText;
   private final Map<String, String> nextRegion = new HashMap<>();
   private final Map<AltoTextStyle, String> textStyles = new LinkedHashMap<>();
   private final Map<ParagraphStyle, String> paragraphStyles = new LinkedHashMap<>();
@@ -115,6 +112,7 @@ public final class AltoWriter {
 
   private AltoWriter(Page page) {
     this.page = page;
+    this.pageText = new PageText(page);
   }
 
   public static byte[] write(Page page) {
@@ -122,7 +120,6 @@ public final class AltoWriter {
   }
 
   private byte[] document() {
-    propagateText();
     ReadingOrder order = page.readingOrder();
     if (order != null) {
       collectNext(order.group());
@@ -370,8 +367,7 @@ public final class AltoWriter {
     if (line.words().isEmpty()) {
       // ALTO needs a string in every line: one for the whole line.
       Node string = node.add("String");
-      String text = text(line.textEquivs());
-      string.attribute("CONTENT", text != null ? text : propagatedLine(line));
+      string.attribute("CONTENT", pageText.line(line));
       position(string, line.coords());
       return;
     }
@@ -383,24 +379,16 @@ public final class AltoWriter {
   private void word(Node line, Word word) {
     Node node = line.add("String");
     node.attribute("ID", word.id());
-    String content = text(word.textEquivs());
-    if (content == null) {
-      content =
-          String.join("", word.glyphs().stream().map(g -> orEmpty(text(g.textEquivs()))).toList());
-    }
-    if (content.isEmpty()) {
-      content = propagatedWords.getOrDefault(word.id(), "");
-    }
-    node.attribute("CONTENT", content);
+    node.attribute("CONTENT", pageText.word(word));
     language(node, word.language());
     position(node, word.coords());
     node.attribute("STYLEREFS", textStyle(word.textStyle()));
-    TextEquiv main = main(word.textEquivs());
+    TextEquiv main = PageText.main(word.textEquivs());
     node.attribute("WC", main == null ? null : main.conf());
     List<String> tagRefs = tagRefs(word.labels());
     node.attribute("TAGREFS", tagRefs.isEmpty() ? null : String.join(" ", tagRefs));
     shape(node, word.coords());
-    for (TextEquiv alternative : others(word.textEquivs())) {
+    for (TextEquiv alternative : PageText.others(word.textEquivs())) {
       node.text("ALTERNATIVE", alternative.unicode());
     }
     for (Glyph glyph : word.glyphs()) {
@@ -411,16 +399,13 @@ public final class AltoWriter {
   private void glyph(Node word, Glyph glyph) {
     Node node = word.add("Glyph");
     node.attribute("ID", glyph.id());
-    String content = orEmpty(text(glyph.textEquivs()));
-    if (content.isEmpty()) {
-      content = propagatedGlyphs.getOrDefault(glyph.id(), "");
-    }
+    String content = pageText.glyph(glyph);
     node.attribute("CONTENT", content.isEmpty() ? "?" : content);
     position(node, glyph.coords());
-    TextEquiv main = main(glyph.textEquivs());
+    TextEquiv main = PageText.main(glyph.textEquivs());
     node.attribute("GC", main == null ? null : main.conf());
     shape(node, glyph.coords());
-    for (TextEquiv variant : others(glyph.textEquivs())) {
+    for (TextEquiv variant : PageText.others(glyph.textEquivs())) {
       Node variantNode = node.add("Variant");
       variantNode.attribute("CONTENT", variant.unicode());
       variantNode.attribute("VC", variant.conf());
@@ -472,118 +457,6 @@ public final class AltoWriter {
       case FormRegion r -> r.orientation();
       default -> null;
     };
-  }
-
-  // ---- Text
-
-  /** The text equivalent with the lowest index (unindexed first). */
-  private static @Nullable TextEquiv main(List<TextEquiv> equivs) {
-    return equivs.stream()
-        .min(
-            Comparator.comparing(
-                TextEquiv::index, Comparator.nullsFirst(Comparator.naturalOrder())))
-        .orElse(null);
-  }
-
-  private static List<TextEquiv> others(List<TextEquiv> equivs) {
-    TextEquiv main = main(equivs);
-    return equivs.stream()
-        .filter(e -> e != main)
-        .sorted(
-            Comparator.comparing(
-                TextEquiv::index, Comparator.nullsFirst(Comparator.naturalOrder())))
-        .toList();
-  }
-
-  private static @Nullable String text(List<TextEquiv> equivs) {
-    TextEquiv main = main(equivs);
-    return main == null ? null : main.unicode();
-  }
-
-  private static String orEmpty(@Nullable String text) {
-    return text == null ? "" : text;
-  }
-
-  private final Map<String, String> propagatedLines = new HashMap<>();
-
-  private String propagatedLine(TextLine line) {
-    return propagatedLines.getOrDefault(line.id(), "");
-  }
-
-  /**
-   * Splits the text of regions over lines (top to bottom), of lines over words and of words over
-   * glyphs (left to right), for the objects that have no text of their own.
-   */
-  private void propagateText() {
-    for (TextRegion region : page.all(TextRegion.class)) {
-      if (region.textLines().isEmpty()) {
-        continue;
-      }
-      String regionText = orEmpty(text(region.textEquivs()));
-      if (regionText.isEmpty()) {
-        regionText = String.join("\n", region.textLines().stream().map(l -> lineText(l)).toList());
-      }
-      String[] regionLines = regionText.split("\r\n|\n");
-      List<TextLine> lines = sorted(region.textLines(), TextLine::coords, true);
-      for (int t = 0; t < lines.size(); t++) {
-        TextLine line = lines.get(t);
-        String lineText = lineText(line);
-        if (lineText.isEmpty() && t < regionLines.length) {
-          lineText = regionLines[t];
-          propagatedLines.put(line.id(), lineText);
-        }
-        String[] lineWords = lineText.split(" ");
-        List<Word> words = sorted(line.words(), Word::coords, false);
-        for (int w = 0; w < words.size(); w++) {
-          Word word = words.get(w);
-          String propagated = "";
-          if (w < lineWords.length) {
-            propagated = lineWords[w];
-            propagatedWords.put(word.id(), propagated);
-          }
-          String wordText = wordText(word);
-          if (wordText.isEmpty()) {
-            wordText = propagated;
-          }
-          int[] characters = wordText.codePoints().toArray();
-          List<Glyph> glyphs = sorted(word.glyphs(), Glyph::coords, false);
-          for (int g = 0; g < glyphs.size() && g < characters.length; g++) {
-            propagatedGlyphs.put(glyphs.get(g).id(), Character.toString(characters[g]));
-          }
-        }
-      }
-    }
-  }
-
-  private static String lineText(TextLine line) {
-    String text = orEmpty(text(line.textEquivs()));
-    return text.isEmpty()
-        ? String.join(" ", line.words().stream().map(AltoWriter::wordText).toList()).strip()
-        : text;
-  }
-
-  private static String wordText(Word word) {
-    String text = orEmpty(text(word.textEquivs()));
-    return text.isEmpty()
-        ? String.join("", word.glyphs().stream().map(g -> orEmpty(text(g.textEquivs()))).toList())
-        : text;
-  }
-
-  /** Sorted by the centre of their bounding boxes, vertically or horizontally. */
-  private static <T> List<T> sorted(
-      List<T> objects, Function<T, Polygon> coords, boolean vertical) {
-    return objects.stream()
-        .sorted(
-            Comparator.comparingInt(
-                o -> {
-                  Polygon polygon = coords.apply(o);
-                  if (polygon.isEmpty()) {
-                    return 0;
-                  }
-                  Rect box = polygon.boundingBox();
-                  return vertical ? (box.top() + box.bottom()) / 2 : (box.left() + box.right()) / 2;
-                }))
-        .toList();
   }
 
   // ---- Styles, tags and reading order
@@ -723,7 +596,7 @@ public final class AltoWriter {
     if (node.children.isEmpty() && node.text == null) {
       out.writeEmptyElement(NAMESPACE, node.name);
       for (Map.Entry<String, String> attribute : node.attributes.entrySet()) {
-        out.writeAttribute(attribute.getKey(), attribute.getValue());
+        out.writeAttribute(attribute.getKey(), checked(node, attribute));
       }
       return;
     }
@@ -734,10 +607,10 @@ public final class AltoWriter {
   private static void attributesAndContent(XMLStreamWriter out, Node node, int depth)
       throws XMLStreamException {
     for (Map.Entry<String, String> attribute : node.attributes.entrySet()) {
-      out.writeAttribute(attribute.getKey(), attribute.getValue());
+      out.writeAttribute(attribute.getKey(), checked(node, attribute));
     }
     if (node.text != null) {
-      out.writeCharacters(node.text);
+      out.writeCharacters(XmlText.checked("ALTO", element(node), node.text));
     }
     for (Node child : node.children) {
       node(out, child, depth + 1);
@@ -746,5 +619,15 @@ public final class AltoWriter {
       out.writeCharacters("\n" + INDENT.repeat(depth));
     }
     out.writeEndElement();
+  }
+
+  private static String checked(Node node, Map.Entry<String, String> attribute) {
+    return XmlText.checked(
+        "ALTO", element(node) + " attribute " + attribute.getKey(), attribute.getValue());
+  }
+
+  private static String element(Node node) {
+    String id = node.attributes.get("ID");
+    return id == null ? node.name : node.name + " '" + id + "'";
   }
 }

@@ -100,7 +100,12 @@ public final class AltoXml {
 
   // ---- Writing
 
-  /** Writes a page as ALTO 4.1. */
+  /**
+   * Writes a page as ALTO 4.1.
+   *
+   * @throws IllegalArgumentException if the page holds text XML can't hold, such as control
+   *     characters
+   */
   public byte[] write(Page page) {
     return AltoWriter.write(page);
   }
@@ -109,6 +114,7 @@ public final class AltoXml {
    * Writes a page as ALTO 4.1 to a stream, which is not closed.
    *
    * @throws IOException if the stream can't be written
+   * @throws IllegalArgumentException if the page holds text XML can't hold
    */
   public void write(Page page, OutputStream out) throws IOException {
     out.write(write(page));
@@ -118,6 +124,7 @@ public final class AltoXml {
    * Writes a page as ALTO 4.1 to a file, replacing it if it exists.
    *
    * @throws IOException if the file can't be written
+   * @throws IllegalArgumentException if the page holds text XML can't hold
    */
   public void write(Page page, Path path) throws IOException {
     Files.write(path, write(page));

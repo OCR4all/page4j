@@ -17,6 +17,8 @@ import com.maxnth.page4j.model.TextLine;
 import com.maxnth.page4j.model.TextLineBuilder;
 import com.maxnth.page4j.model.TextRegionBuilder;
 import com.maxnth.page4j.model.UnknownRegionBuilder;
+import com.maxnth.page4j.model.Word;
+import com.maxnth.page4j.model.WordBuilder;
 import com.maxnth.page4j.model.value.Align;
 import com.maxnth.page4j.model.value.GraphicsType;
 import com.maxnth.page4j.model.value.Language;
@@ -26,6 +28,7 @@ import com.maxnth.page4j.pagexml.PageReadException;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
@@ -101,11 +104,7 @@ public final class FineReaderReader {
     a.string("pagesCount");
     String mainLanguage = a.string("mainLanguage");
     if (mainLanguage != null) {
-      try {
-        language = Language.fromXml(mainLanguage);
-      } catch (IllegalArgumentException e) {
-        a.ignored("document: mainLanguage '" + mainLanguage + "' is not a PAGE language");
-      }
+      language = language(mainLanguage, a, "document: mainLanguage");
     }
     while (nextChild()) {
       if (!name().equals("page")) {
@@ -343,24 +342,48 @@ public final class FineReaderReader {
     return region.build();
   }
 
+  private record Character(
+      String text, @Nullable Rect box, @Nullable Double conf, boolean wordStart) {}
+
+  private record Run(
+      String text, @Nullable List<Character> characters, @Nullable Language language) {}
+
   private TextLine line() throws XMLStreamException {
     Attrs a = attrs();
     Polygon coords = rect(a);
     Double baseline = a.decimal("baseline");
     var text = new StringBuilder();
+    List<Character> characters = new ArrayList<>();
+    boolean plainRun = false;
+    boolean firstRun = true;
+    Language language = null;
     while (nextChild()) {
       if (name().equals("formatting")) {
-        text.append(formatting());
+        Run run = formatting();
+        text.append(run.text());
+        if (run.characters() == null) {
+          plainRun = true;
+        } else {
+          characters.addAll(run.characters());
+        }
+        if (firstRun) {
+          language = run.language();
+          firstRun = false;
+        }
       } else {
         ignore("line");
       }
     }
     a.done();
-    var line = TextLineBuilder.builder().id(ids.generate("l")).coords(coords);
+    var line =
+        TextLineBuilder.builder().id(ids.generate("l")).coords(coords).primaryLanguage(language);
     if (baseline != null) {
       Rect box = coords.boundingBox();
       int y = (int) baseline.doubleValue();
       line.baseline(Polygon.of(new Point(box.left(), y), new Point(box.right(), y)));
+    }
+    if (!plainRun) {
+      line.words(words(characters));
     }
     if (!text.isEmpty()) {
       line.addTextEquivs(TextEquivBuilder.builder().unicode(text.toString()).build());
@@ -368,22 +391,70 @@ public final class FineReaderReader {
     return line.build();
   }
 
-  /** The characters of a formatting run: its character elements, or else its text. */
-  private String formatting() throws XMLStreamException {
+  private List<Word> words(List<Character> characters) {
+    if (characters.stream().anyMatch(c -> c.box() == null && !c.text().isBlank())) {
+      return List.of();
+    }
+    List<Word> words = new ArrayList<>();
+    List<Character> current = new ArrayList<>();
+    for (Character character : characters) {
+      if (character.text().isBlank()) {
+        addWord(words, current);
+        continue;
+      }
+      if (character.wordStart()) {
+        addWord(words, current);
+      }
+      current.add(character);
+    }
+    addWord(words, current);
+    return words;
+  }
+
+  private void addWord(List<Word> words, List<Character> characters) {
+    if (characters.isEmpty()) {
+      return;
+    }
+    Polygon.Builder corners = Polygon.builder();
+    var text = new StringBuilder();
+    double confidence = 0;
+    int confidences = 0;
+    for (Character character : characters) {
+      Rect box = Objects.requireNonNull(character.box());
+      corners.add(box.left(), box.top()).add(box.right(), box.bottom());
+      text.append(character.text());
+      Double conf = character.conf();
+      if (conf != null && conf >= 0 && conf <= 100) {
+        confidence += conf;
+        confidences++;
+      }
+    }
+    words.add(
+        WordBuilder.builder()
+            .id(ids.generate("w"))
+            .coords(corners.build().boundingBox().toPolygon())
+            .addTextEquivs(
+                TextEquivBuilder.builder()
+                    .unicode(text.toString())
+                    .conf(confidences == 0 ? null : confidence / confidences / 100)
+                    .build())
+            .build());
+    characters.clear();
+  }
+
+  private Run formatting() throws XMLStreamException {
     Attrs a = attrs();
+    String lang = a.string("lang");
+    Language language = lang == null ? null : language(lang, a, "formatting: lang");
     var plain = new StringBuilder();
-    var characters = new StringBuilder();
-    boolean hasCharacters = false;
+    List<Character> characters = new ArrayList<>();
     while (true) {
       int event = r.next();
       if (event == XMLStreamConstants.END_ELEMENT) {
         break;
       } else if (event == XMLStreamConstants.START_ELEMENT) {
         if (name().equals("charParams")) {
-          Attrs character = attrs();
-          characters.append(XmlInput.text(r));
-          character.done();
-          hasCharacters = true;
+          characters.add(character());
         } else {
           ignore("formatting");
         }
@@ -394,6 +465,51 @@ public final class FineReaderReader {
       }
     }
     a.done();
-    return hasCharacters ? characters.toString() : plain.toString();
+    if (characters.isEmpty()) {
+      return new Run(plain.toString(), null, language);
+    }
+    String text = String.join("", characters.stream().map(Character::text).toList());
+    return new Run(text, characters, language);
+  }
+
+  private Character character() throws XMLStreamException {
+    Attrs a = attrs();
+    Double left = a.decimal("l");
+    Double top = a.decimal("t");
+    Double right = a.decimal("r");
+    Double bottom = a.decimal("b");
+    Double conf = a.decimal("charConfidence");
+    String wordStart = a.string("wordStart");
+    String text = XmlInput.text(r);
+    a.done();
+    Rect box =
+        left == null || top == null || right == null || bottom == null
+            ? null
+            : new Rect(
+                (int) left.doubleValue(),
+                (int) top.doubleValue(),
+                (int) right.doubleValue(),
+                (int) bottom.doubleValue());
+    boolean starts =
+        wordStart != null && ("1".equals(wordStart.strip()) || "true".equals(wordStart.strip()));
+    return new Character(text, box, conf, starts);
+  }
+
+  private static @Nullable Language language(String value, Attrs a, String attribute) {
+    try {
+      return Language.fromXml(value);
+    } catch (IllegalArgumentException e) {
+      Language best = null;
+      for (Language language : Language.values()) {
+        if (value.startsWith(language.xmlValue())
+            && (best == null || language.xmlValue().length() > best.xmlValue().length())) {
+          best = language;
+        }
+      }
+      if (best == null) {
+        a.ignored(attribute + " '" + value + "' is not a PAGE language");
+      }
+      return best;
+    }
   }
 }

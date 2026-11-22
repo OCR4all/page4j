@@ -35,7 +35,7 @@ The HTML test report is generated at `build/reports/tests/test/index.html`.
 | `pagexml.RoundTripFidelityTest`         | Same-version round trips of every fixture against a known-differences ratchet |
 | `pagexml.PageXmlGoldenTest`             | Conversion of one document to every version against golden files    |
 | `convert.PageConverterTest`             | Each rule of the version conversion                                 |
-| `formats.*`                             | The ALTO, FineReader, hOCR and METS readers and the ALTO writer     |
+| `formats.*`                             | The ALTO, FineReader, hOCR and METS readers and the ALTO, FineReader and hOCR writers |
 
 ## Fixtures
 

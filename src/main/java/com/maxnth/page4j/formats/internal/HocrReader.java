@@ -4,12 +4,16 @@ import com.maxnth.page4j.formats.ReadResult;
 import com.maxnth.page4j.geometry.Point;
 import com.maxnth.page4j.geometry.Polygon;
 import com.maxnth.page4j.geometry.Rect;
+import com.maxnth.page4j.model.ChemRegionBuilder;
 import com.maxnth.page4j.model.ImageRegionBuilder;
 import com.maxnth.page4j.model.InvalidPageException;
+import com.maxnth.page4j.model.LineDrawingRegionBuilder;
+import com.maxnth.page4j.model.MathsRegionBuilder;
 import com.maxnth.page4j.model.MetadataBuilder;
 import com.maxnth.page4j.model.Page;
 import com.maxnth.page4j.model.Region;
 import com.maxnth.page4j.model.SeparatorRegionBuilder;
+import com.maxnth.page4j.model.TableRegionBuilder;
 import com.maxnth.page4j.model.TextEquivBuilder;
 import com.maxnth.page4j.model.TextLine;
 import com.maxnth.page4j.model.TextLineBuilder;
@@ -50,7 +54,7 @@ public final class HocrReader {
     Title(@Nullable String title, Attrs at) {
       this.at = at;
       if (title != null) {
-        for (String part : title.split(";")) {
+        for (String part : properties(title)) {
           String property = part.strip();
           if (!property.isEmpty()) {
             int space = property.indexOf(' ');
@@ -60,6 +64,28 @@ public final class HocrReader {
           }
         }
       }
+    }
+
+    private static List<String> properties(String title) {
+      List<String> parts = new ArrayList<>();
+      var part = new StringBuilder();
+      boolean quoted = false;
+      for (int i = 0; i < title.length(); i++) {
+        char c = title.charAt(i);
+        if (quoted && c == '\\' && i + 1 < title.length()) {
+          part.append(c).append(title.charAt(++i));
+        } else if (c == '"') {
+          quoted = !quoted;
+          part.append(c);
+        } else if (c == ';' && !quoted) {
+          parts.add(part.toString());
+          part.setLength(0);
+        } else {
+          part.append(c);
+        }
+      }
+      parts.add(part.toString());
+      return parts;
     }
 
     @Nullable String get(String name) {
@@ -117,6 +143,7 @@ public final class HocrReader {
   private boolean pageRead;
   private @Nullable String pcGtsId;
   private String imageFilename = "";
+  private @Nullable Language language;
   private int width;
   private int height;
   private @Nullable Double xResolution;
@@ -168,6 +195,7 @@ public final class HocrReader {
             .imageXResolution(xResolution)
             .imageYResolution(yResolution)
             .imageResolutionUnit(xResolution == null ? null : ResolutionUnit.PPI)
+            .primaryLanguage(language)
             .regions(regions)
             .build();
     return new ReadResult(page, diagnostics.list());
@@ -243,6 +271,26 @@ public final class HocrReader {
           regions.add(ImageRegionBuilder.builder().id(id).coords(box.toPolygon()).build());
         }
       }
+      case "ocr_table", "ocr_linedrawing", "ocr_math", "ocr_chem" -> {
+        String id = ids.id(a.string("id"), "r", a);
+        Rect box = title.bbox();
+        title.done(hocrClass);
+        a.done();
+        if (box == null) {
+          a.ignored(hocrClass + " without bbox ignored, its content is read");
+        } else {
+          Polygon coords = box.toPolygon();
+          regions.add(
+              switch (hocrClass) {
+                case "ocr_table" -> TableRegionBuilder.builder().id(id).coords(coords).build();
+                case "ocr_linedrawing" ->
+                    LineDrawingRegionBuilder.builder().id(id).coords(coords).build();
+                case "ocr_math" -> MathsRegionBuilder.builder().id(id).coords(coords).build();
+                default -> ChemRegionBuilder.builder().id(id).coords(coords).build();
+              });
+        }
+        children(container, null);
+      }
       default -> {
         if (LINES.contains(hocrClass)) {
           if (container == null) {
@@ -299,11 +347,12 @@ public final class HocrReader {
         a.ignored("ocr_page: id '" + id + "' is not a valid or unique ID");
       }
     }
+    language = language(a);
     String image = title.get("image");
     if (image != null) {
       String file = image.strip();
       if (file.startsWith("\"") && file.endsWith("\"") && file.length() >= 2) {
-        file = file.substring(1, file.length() - 1);
+        file = file.substring(1, file.length() - 1).replaceAll("\\\\([\"\\\\])", "$1");
       }
       imageFilename = file.substring(Math.max(file.lastIndexOf('/'), file.lastIndexOf('\\')) + 1);
     }

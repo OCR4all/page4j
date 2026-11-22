@@ -80,7 +80,15 @@ Page page = switch (Format.detect(data)) {
 };
 ```
 
-`AltoXml.write` writes a page as ALTO 4.1.
+Write a page as ALTO 4.1, FineReader 10 XML or hOCR:
+
+```java
+Files.write(Path.of("page.alto.xml"), AltoXml.create().write(page));
+Files.write(Path.of("page.abbyy.xml"), FineReaderXml.create().write(page));
+Files.write(Path.of("page.hocr"), Hocr.create().write(page));
+```
+
+Each format holds less than PAGE; the API documentation of each class lists what is written.
 
 The [API documentation](https://javadoc.io/doc/com.maxnth/page4j) covers the model, the builders
 and the details of each format.

@@ -1,22 +1,33 @@
 package com.maxnth.page4j.formats;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertInstanceOf;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import com.maxnth.page4j.geometry.Point;
 import com.maxnth.page4j.geometry.Polygon;
 import com.maxnth.page4j.geometry.Rect;
+import com.maxnth.page4j.model.ChemRegion;
 import com.maxnth.page4j.model.ImageRegion;
+import com.maxnth.page4j.model.LineDrawingRegion;
+import com.maxnth.page4j.model.MathsRegion;
 import com.maxnth.page4j.model.Page;
+import com.maxnth.page4j.model.SeparatorRegion;
+import com.maxnth.page4j.model.TableRegion;
 import com.maxnth.page4j.model.TextLine;
+import com.maxnth.page4j.model.TextLineBuilder;
 import com.maxnth.page4j.model.TextRegion;
+import com.maxnth.page4j.model.TextRegionBuilder;
 import com.maxnth.page4j.model.Word;
 import com.maxnth.page4j.model.value.Language;
 import com.maxnth.page4j.model.value.ReadingDirection;
 import com.maxnth.page4j.pagexml.PageReadException;
 import com.maxnth.page4j.pagexml.PageXml;
 import com.maxnth.page4j.pagexml.PageXmlVersion;
+import java.io.ByteArrayOutputStream;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -111,6 +122,7 @@ class HocrTest {
     assertEquals(1000, page.imageWidth());
     assertEquals(300.0, page.imageXResolution());
     assertEquals("tesseract 5.3.0", page.metadata().creator());
+    assertNull(page.primaryLanguage());
 
     assertEquals(
         List.of("par_1_1", "block_1_2", "photo_1", "par_1_9"),
@@ -145,8 +157,187 @@ class HocrTest {
   }
 
   @Test
+  void readsTablesDrawingsMathsAndChemistryAsRegions() throws Exception {
+    ReadResult read =
+        read(
+            """
+            <html xmlns="http://www.w3.org/1999/xhtml">
+              <body>
+                <div class="ocr_page" lang="deu" title="bbox 0 0 200 100">
+                  <div class="ocr_table" id="t1" title="bbox 0 0 100 50">
+                    <div class="ocr_carea" id="c1" title="bbox 0 0 50 25">
+                      <span class="ocr_line" id="l1" title="bbox 0 0 50 25">cell</span>
+                    </div>
+                  </div>
+                  <div class="ocr_linedrawing" id="d1" title="bbox 100 0 150 50"></div>
+                  <div class="ocr_math" id="m1" title="bbox 150 0 200 50"></div>
+                  <div class="ocr_chem" id="h1" title="bbox 0 50 50 100"></div>
+                  <div class="ocr_table" id="t2"></div>
+                </div>
+              </body>
+            </html>
+            """);
+
+    Page page = read.page();
+    assertEquals(Language.GERMAN, page.primaryLanguage());
+    assertEquals(
+        List.of("t1", "c1", "d1", "m1", "h1"), page.regions().stream().map(r -> r.id()).toList());
+    assertInstanceOf(TableRegion.class, page.regions().getFirst());
+    assertInstanceOf(TextRegion.class, page.regions().get(1));
+    assertInstanceOf(LineDrawingRegion.class, page.regions().get(2));
+    assertInstanceOf(MathsRegion.class, page.regions().get(3));
+    assertInstanceOf(ChemRegion.class, page.regions().get(4));
+    assertEquals(
+        List.of("IGNORED ocr_table without bbox ignored, its content is read"),
+        read.diagnostics().stream().map(d -> d.kind() + " " + d.message()).toList());
+  }
+
+  @Test
+  void writesALineWhoseWordsDontSpellItsTextAsItsText() throws Exception {
+    byte[] written = HOCR.write(WriterTestPages.page("engine", "Hello World!"));
+
+    TextLine first =
+        HOCR.read(written).page().all(TextLine.class).stream().findFirst().orElseThrow();
+    assertEquals("Hello World!", first.textEquivs().getFirst().unicode());
+    assertEquals(List.of(), first.words());
+  }
+
+  @Test
+  void writesImageNamesWithQuotesAndSemicolonsThatReadBack() throws Exception {
+    byte[] written = HOCR.write(WriterTestPages.page("engine", "Hello Wörld", "scan;1 \"a\".png"));
+
+    ReadResult read = HOCR.read(written);
+    assertEquals("scan;1 \"a\".png", read.page().imageFilename());
+    assertEquals(1000, read.page().imageWidth());
+    assertEquals(List.of(), read.diagnostics());
+  }
+
+  @Test
+  void readsWindowsImagePaths() throws Exception {
+    Page page =
+        read("""
+                <html xmlns="http://www.w3.org/1999/xhtml"><body>
+                  <div class="ocr_page" title='image "C:\\scans\\p1.png"; bbox 0 0 10 10'></div>
+                </body></html>
+                """)
+            .page();
+
+    assertEquals("p1.png", page.imageFilename());
+  }
+
+  @Test
+  void refusesTextXmlCannotHold() {
+    Page page =
+        WriterTestPages.page()
+            .withReadingOrder(null)
+            .withRegions(
+                List.of(
+                    TextRegionBuilder.builder()
+                        .id("r1")
+                        .coords(WriterTestPages.box(0, 0, 100, 50))
+                        .addTextLines(
+                            TextLineBuilder.builder()
+                                .id("l1")
+                                .coords(WriterTestPages.box(0, 0, 100, 50))
+                                .addTextEquivs(WriterTestPages.text("a\u0001b", null))
+                                .build())
+                        .build()));
+
+    assertEquals(
+        "Cannot write hOCR: TextLine 'l1' contains the character U+0001, which XML can't hold",
+        assertThrows(IllegalArgumentException.class, () -> HOCR.write(page)).getMessage());
+    assertEquals(
+        "Cannot write FineReader XML: TextLine 'l1' contains the character U+0001, which XML"
+            + " can't hold",
+        assertThrows(IllegalArgumentException.class, () -> FineReaderXml.create().write(page))
+            .getMessage());
+    assertEquals(
+        "Cannot write ALTO: String attribute CONTENT contains the character U+0001, which XML"
+            + " can't hold",
+        assertThrows(IllegalArgumentException.class, () -> AltoXml.create().write(page))
+            .getMessage());
+  }
+
+  @Test
+  void leavesOutABlankCreator() throws Exception {
+    String written =
+        new String(HOCR.write(WriterTestPages.page(" ", "Hello Wörld")), StandardCharsets.UTF_8);
+
+    assertFalse(written.contains("ocr-system"), written);
+  }
+
+  @Test
   void failsOnOtherDocuments() {
     assertThrows(PageReadException.class, () -> read("<alto/>"));
     assertThrows(PageReadException.class, () -> read("<html><br></html>"));
+  }
+
+  @Test
+  void writtenPagesReadBackAndWriteTheSame() throws Exception {
+    byte[] written = HOCR.write(WriterTestPages.page());
+    ReadResult read = HOCR.read(written);
+    assertEquals(List.of(), read.diagnostics(), new String(written, StandardCharsets.UTF_8));
+    assertArrayEquals(written, HOCR.write(read.page()));
+
+    Page page = read.page();
+    assertEquals("page1", page.pcGtsId());
+    assertEquals("engine", page.metadata().creator());
+    assertEquals("page.png", page.imageFilename());
+    assertEquals(1000, page.imageWidth());
+    assertEquals(800, page.imageHeight());
+    assertEquals(300.0, page.imageXResolution());
+    assertEquals(Language.GERMAN, page.primaryLanguage());
+    assertEquals(
+        List.of("i1", "r1", "s1"), page.regions().stream().map(region -> region.id()).toList());
+    assertInstanceOf(ImageRegion.class, page.regions().getFirst());
+    assertInstanceOf(SeparatorRegion.class, page.regions().get(2));
+
+    TextRegion region = page.find("r1", TextRegion.class).orElseThrow();
+    assertEquals(new Rect(100, 100, 900, 300), region.coords().boundingBox());
+    assertEquals(ReadingDirection.LEFT_TO_RIGHT, region.readingDirection());
+
+    TextLine first = region.textLines().getFirst();
+    assertEquals("l1", first.id());
+    assertEquals(new Rect(100, 100, 500, 150), first.coords().boundingBox());
+    assertEquals(Polygon.of(new Point(100, 140), new Point(500, 140)), first.baseline());
+    assertEquals("Hello Wörld", first.textEquivs().getFirst().unicode());
+    Word hello = first.words().getFirst();
+    assertEquals("w1", hello.id());
+    assertEquals(new Rect(100, 100, 249, 150), hello.coords().boundingBox());
+    assertEquals(0.9, hello.textEquivs().getFirst().conf());
+    assertEquals(0.75, first.words().get(1).textEquivs().getFirst().conf());
+
+    TextLine second = region.textLines().get(1);
+    assertEquals(Language.ENGLISH, second.primaryLanguage());
+    assertEquals("second & <line>", second.textEquivs().getFirst().unicode());
+
+    PageXml.create().write(page, PageXmlVersion.LATEST);
+  }
+
+  @Test
+  void theGoldenPageGoesThroughHocrAndBackAsValidPage() throws Exception {
+    Page golden;
+    try (var in = HocrTest.class.getResourceAsStream("/golden/2024-07-15.xml")) {
+      golden = PageXml.create().read(in).page();
+    }
+    ReadResult read = HOCR.read(HOCR.write(golden));
+    assertEquals(
+        golden.textLines().stream().map(line -> line.id()).toList(),
+        read.page().textLines().stream().map(line -> line.id()).toList());
+    assertEquals(
+        golden.all(TextRegion.class).stream().map(region -> region.id()).sorted().toList(),
+        read.page().all(TextRegion.class).stream().map(region -> region.id()).sorted().toList());
+    PageXml.create().write(read.page(), PageXmlVersion.LATEST);
+  }
+
+  @Test
+  void writesPathsAndStreams() throws Exception {
+    Page page = WriterTestPages.page();
+    Path file = directory.resolve("written.hocr");
+    HOCR.write(page, file);
+    assertArrayEquals(HOCR.write(page), Files.readAllBytes(file));
+    var stream = new ByteArrayOutputStream();
+    HOCR.write(page, stream);
+    assertArrayEquals(HOCR.write(page), stream.toByteArray());
   }
 }
